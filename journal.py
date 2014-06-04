@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 import os
 import psycopg2
 from flask import Flask
@@ -17,8 +16,8 @@ CREATE TABLE entries (
 app = Flask(__name__)
 
 app.config['DATABASE'] = os.environ.get(
-    'DATABASE_URL', 'dbname=learning_journal user=corinnelhh'
-)
+    'DATABASE_URL', 'dbname=learning_journal user=ian'
+    )
 
 
 def connect_db():
