@@ -139,7 +139,6 @@ def get_all_entries():
 def show_entries():
     entries = get_all_entries()
     #print(entries)
-    template = 
     #print('Printing template.......................')
     #print(template)
     #return template
