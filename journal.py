@@ -133,7 +133,7 @@ def show_entries():
     template = template_list('entries_html.entries', entries=render)
     print('Printing template.......................')
     print(template)
-    return templat
+    return template
 
 @app.route('/add', methods=['POST'])
 def add_entry():
