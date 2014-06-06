@@ -123,14 +123,23 @@ def get_all_entries():
     cur = con.cursor()
     cur.execute(DB_ENTRIES_LIST)
     keys = ('id', 'title', 'text', 'created')
-    return [dict(zip(keys, row)) for row in cur.fetchall()]
+    rows = cur.fetchall()
+    fixed = []
+    for row in rows:
+        fixed_row = []
+        for idx, val in enumerate(row):
+            if idx in (1,2):
+                val = val.decode('UTF-8')
+            fixed_row.append(val)
+        fixed.append(fixed_row)
+    return [dict(zip(keys, row)) for row in fixed]
 
 
 @app.route('/')
 def show_entries():
     entries = get_all_entries()
     #print(entries)
-    #template = 
+    template = 
     #print('Printing template.......................')
     #print(template)
     #return template
