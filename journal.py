@@ -129,11 +129,12 @@ def get_all_entries():
 @app.route('/')
 def show_entries():
     entries = get_all_entries()
-    print(entries)
-    template = template_list('entries_html.entries', entries=render)
-    print('Printing template.......................')
-    print(template)
-    return template
+    #print(entries)
+    #template = template_list('entries_html.entries', entries=render)
+    #print('Printing template.......................')
+    #print(template)
+    #return template
+    return 'Work plz kthx'    
 
 @app.route('/add', methods=['POST'])
 def add_entry():
