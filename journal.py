@@ -129,6 +129,7 @@ def get_all_entries():
 @app.route('/')
 def show_entries():
     entries = get_all_entries()
+    print(entries)
     return render_template('list_entries.html', entries=entries)
 
 
