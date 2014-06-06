@@ -130,8 +130,9 @@ def get_all_entries():
 def show_entries():
     entries = get_all_entries()
     print(entries)
-    return render_template('list_entries.html', entries=entries)
-
+    template = render_template('list_entries.html', entries=entries)
+    print(template)
+    return template
 
 @app.route('/add', methods=['POST'])
 def add_entry():
