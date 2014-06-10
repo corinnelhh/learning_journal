@@ -1,3 +1,6 @@
+import os
+from passlib.hash import pbkdf2_sha256
+
 DATABASE = os.environ.get(
     'DATABASE_URL', 'dbname=learning_journal'
 )

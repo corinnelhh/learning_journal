@@ -26,11 +26,11 @@ SELECT id, title, text, created FROM entries ORDER BY created DESC
 """
 
 app = Flask(__name__)
-app.config.from_object('config.py')
+app.config.from_object('config')
 
 
 def connect_db():
-    """Return a connection to the configured database"""
+    """ Return a connection to the configured database """
     return psycopg2.connect(app.config['DATABASE'])
 
 
