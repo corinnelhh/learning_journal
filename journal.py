@@ -26,24 +26,7 @@ SELECT id, title, text, created FROM entries ORDER BY created DESC
 """
 
 app = Flask(__name__)
-
-app.config['DATABASE'] = os.environ.get(
-    'DATABASE_URL', 'dbname=learning_journal'
-)
-
-app.config['ADMIN_USERNAME'] = os.environ.get(
-    'ADMIN_USERNAME', 'admin'
-)
-
-app.config['ADMIN_PASSWORD'] = os.environ.get(
-    'ADMIN_PASSWORD', pbkdf2_sha256.encrypt('admin')
-
-)
-
-
-app.config['SECRET_KEY'] = os.environ.get(
-    'FLASK_SECRET_KEY', 'C\x93d\xd8\xe0wcK\xcb\xc3\xd0\xab\x04\xf0\xd0?\xba\xfd\xa0\xbc\xca\xe4a\xd1aE\xcb\x03\xd7T[\xf8'
-)
+app.config.from_object('config.py')
 
 
 def connect_db():
@@ -138,10 +121,6 @@ def get_all_entries():
 @app.route('/')
 def show_entries():
     entries = get_all_entries()
-    #print(entries)
-    #print('Printing template.......................')
-    #print(template)
-    #return template
     return render_template('list_entries.html', entries=entries)    
 
 @app.route('/add', methods=['POST'])
