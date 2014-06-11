@@ -25,8 +25,16 @@ DB_ENTRIES_LIST = """
 SELECT id, title, text, created FROM entries ORDER BY created DESC
 """
 
-DB_RETURN_BY_ID= """
-SELECT (title, text, created) FROM entries WHERE id = %s 
+DB_RETURN_BY_ID = """
+SELECT id, title, text, created FROM entries WHERE id = (%s)  
+"""
+
+DB_UPDATE_ENTRY = """
+UPDATE entries
+SET title = %s,
+    text = %s,
+    created = %s
+WHERE id = %s
 """
 
 app = Flask(__name__)
@@ -98,6 +106,12 @@ def write_entry(title, text):
     cur = con.cursor()
     now = datetime.datetime.utcnow()
     cur.execute(DB_ENTRY_INSERT, [title, text, now])
+    
+def update_entry(id, title, text):
+    con = get_database_connection()
+    cur = con.cursor()
+    now = datetime.datetime.utcnow()
+    cur.execute(DB_UPDATE_ENTRY, [title, text, now, id])
 
 
 def get_all_entries():
@@ -147,10 +161,19 @@ def add_entry():
         abort(500)
     return redirect(url_for('show_entries'))
     
-@app.route('/edit/<int:id>')
+@app.route('/edit/<int:id>', methods=["GET", "POST"])
 def edit(id):
-    entry = get_single_entry(id)
-    return render_template('edit.html')
+    if request.method == 'GET':
+        entry = get_single_entry(id)
+    else:
+        try:
+            update_entry(id, request.form['title'], request.form['text'])
+            return redirect(url_for('show_entries'))
+        except psycopg2.Error:
+            abort(500)
+    return render_template('edit.html', entry=entry)
+
+
 
 
 if __name__ == '__main__':
