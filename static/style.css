@@ -1,54 +1,82 @@
 body{
     color:#111;
     padding:0;
-    margin:0}
+    margin:0;
+    font-family: Helvetica;
+}
 header{
     margin:0;
     padding:0 0.75em;
-    width:100%;}
+    width:100%;
+}
 header:after{
     content:"";
     display:table;
-    clear:both;}
+    clear:both;
+}
 header a{
-    text-decoration:none}
+    text-decoration:none;
+}
 header aside{
     float:right;
     text-align:right;
-    padding-right:0.75em}
+    padding-right:0.75em;
+}
 header ul{
     list-style:none;
     list-style-type:none;
-    display:inline-block}
+    display:inline-block;
+}
 header ul li{
-    margin:0 0.25em 0 0}
+    margin:0 0.25em 0 0;
+}
 header ul li a{
     padding:0;
-    display:inline-block}
-main{padding:0 0.75em 1em}
+    display:inline-block;
+}
+main{
+    padding:0 0.75em 1em;
+}
 main:after{
     content:"";
     display:table;
-    clear:both}
+    clear:both;
+}
 main article{
     margin-bottom:1em;
-    padding-left:0.5em}
-main article h3{margin-top:0}
+    padding-left:0.5em;
+}
+main article h3{
+    margin-top:0;
+}
 main article .entry_body{
-    margin:0.5em}
-main aside{float:right}
+    margin:0.5em;
+}
+main aside{
+    float:right;
+}
 main aside .field{
-    margin-bottom:1em}
+    margin-bottom:1em;
+}
 main aside .field input,
 main aside .field label,
 main aside .field textarea{
-    vertical-align:top}
+    vertical-align:top;
+}
 main aside .field label{
     display:inline-block;
     width:15%;
-    padding-top:2px}
+    padding-top:2px;
+}
 main aside .field input,
 main aside .field textarea{
-    width:83%}
+    width:83%;
+}
 main aside .control_row input{
-    margin-left:16%}
+    margin-left:16%;
+}
+footer{
+    display: inline-block;
+    margin: 10px;
+    padding-left: 10px;
+}
