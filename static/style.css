@@ -2,6 +2,7 @@ body{
     color:#111;
     padding:0;
     margin:0;
+    font-family: Helvetica;
 }
 header{
     margin:0;
@@ -78,5 +79,4 @@ footer{
     display: inline-block;
     margin: 10px;
     padding-left: 10px;
-    font-family: Helvetica;
 }
