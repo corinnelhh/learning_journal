@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block body %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#title").val('word');
+    });
+</script>
+    <form action="#"method="POST" class="add_entry">
+        <div class="field">
+            <label for="title">Title</label>
+            <input type="test" size="30" name="title" id="title"/>
+        </div><!-- /field -->
+        <div class="field">
+            <label for="text">Text</label>
+            <textarea name="text" id="text" rows="5" cols="80" value="hi"></textarea>
+        </div><!-- /field -->
+        <div class="control_row">
+            <input type="submit" value="Share" name="Share"/>
+        </div><!-- /control-row -->
+    </form>
+    
+
+{% endblock %}

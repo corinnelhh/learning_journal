@@ -25,6 +25,10 @@ DB_ENTRIES_LIST = """
 SELECT id, title, text, created FROM entries ORDER BY created DESC
 """
 
+DB_RETURN_BY_ID= """
+SELECT (title, text, created) FROM entries WHERE id = %s 
+"""
+
 app = Flask(__name__)
 app.config.from_object('config')
 
@@ -32,7 +36,6 @@ app.config.from_object('config')
 def connect_db():
     """ Return a connection to the configured database """
     return psycopg2.connect(app.config['DATABASE'])
-
 
 def init_db():
     """Initialize the database using DB_SCHEMA
@@ -43,14 +46,12 @@ def init_db():
         db.cursor().execute(DB_SCHEMA)
         db.commit()
 
-
 def get_database_connection():
     """ Returns a database connection """
     db = getattr(g, 'db', None)
     if db is None:
         g.db = db = connect_db()
     return db
-
 
 @app.teardown_request
 def teardown_request(exception):
@@ -61,7 +62,6 @@ def teardown_request(exception):
         else:
             db.commit()
         db.close()
-
 
 def do_login(username='', passwd=''):
     if username != app.config['ADMIN_USERNAME']:
@@ -116,12 +116,28 @@ def get_all_entries():
             fixed_row.append(val)
         fixed.append(fixed_row)
     return [dict(zip(keys, row)) for row in fixed]
-
+    
+def get_single_entry(id):
+    con = get_database_connection()
+    cur = con.cursor()
+    cur.execute(DB_RETURN_BY_ID, [id])
+    keys = ('id', 'title', 'text', 'created')
+    rows = cur.fetchall()
+    fixed = []
+    for row in rows:
+        fixed_row = []
+        for idx, val in enumerate(row):
+            if idx in (1,2):
+                val = val.decode('UTF-8')
+            fixed_row.append(val)
+        fixed.append(fixed_row)
+    return [dict(zip(keys, row)) for row in fixed]
+    
 
 @app.route('/')
 def show_entries():
     entries = get_all_entries()
-    return render_template('list_entries.html', entries=entries)    
+    return render_template('list_entries.html', entries=entries)   
 
 @app.route('/add', methods=['POST'])
 def add_entry():
@@ -130,6 +146,11 @@ def add_entry():
     except psycopg2.Error:
         abort(500)
     return redirect(url_for('show_entries'))
+    
+@app.route('/edit/<int:id>')
+def edit(id):
+    entry = get_single_entry(id)
+    return render_template('edit.html')
 
 
 if __name__ == '__main__':
