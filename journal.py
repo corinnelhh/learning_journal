@@ -7,6 +7,7 @@ from flask import request, url_for, redirect, session
 from contextlib import closing
 from passlib.hash import pbkdf2_sha256
 
+
 DB_SCHEMA = """
 DROP TABLE IF EXISTS entries;
 CREATE TABLE entries (
@@ -36,10 +37,8 @@ SET title = %s,
     created = %s
 WHERE id = %s
 """
-
 app = Flask(__name__)
 app.config.from_object('config')
-
 
 def connect_db():
     """ Return a connection to the configured database """
@@ -78,7 +77,6 @@ def do_login(username='', passwd=''):
         raise ValueError
     session['logged_in'] = True
 
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     error = None
@@ -92,12 +90,10 @@ def login():
             return redirect(url_for('show_entries'))
     return render_template('login.html', error=error)
 
-
 @app.route('/logout')
 def logout():
     session.pop('logged_in', None)
     return redirect(url_for('show_entries'))
-
 
 def write_entry(title, text):
     if not title or not text:
@@ -112,7 +108,6 @@ def update_entry(id, title, text):
     cur = con.cursor()
     now = datetime.datetime.utcnow()
     cur.execute(DB_UPDATE_ENTRY, [title, text, now, id])
-
 
 def get_all_entries():
     """return a list of all entries as dicts"""
@@ -146,7 +141,6 @@ def get_single_entry(id):
             fixed_row.append(val)
         fixed.append(fixed_row)
     return [dict(zip(keys, row)) for row in fixed]
-    
 
 @app.route('/')
 def show_entries():
@@ -172,9 +166,6 @@ def edit(id):
         except psycopg2.Error:
             abort(500)
     return render_template('edit.html', entry=entry)
-
-
-
 
 if __name__ == '__main__':
     app.run(debug=True)
