@@ -25,9 +25,11 @@
         <div class="entry_body">
           {{ entry.text|safe }}
         </div>
-        <ul class="edit-links">
-            <li><a href="edit/{{ entry.id }}">Edit</a></li>
-        </ul>
+        {% if session.logged_in %}
+            <ul class="edit-links">
+                <li><a href="edit/{{ entry.id }}">Edit</a></li>
+            </ul>
+        {% endif %}
       </article>
   {% else %}
   <div class="entry">

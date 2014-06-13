@@ -2,7 +2,9 @@
 import os
 import datetime
 import psycopg2
-import pygment
+from pygments import highlight
+from pygments.lexers import PythonLexer
+from pygments.formatters import HtmlFormatter
 from flask import Flask, g, render_template, abort
 from flask import request, url_for, redirect, session
 from contextlib import closing
