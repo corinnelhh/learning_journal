@@ -2,6 +2,7 @@
 import os
 import datetime
 import psycopg2
+import markdown
 from pygments import highlight
 from pygments.lexers import PythonLexer
 from pygments.formatters import HtmlFormatter
@@ -161,6 +162,8 @@ def get_single_entry(id):
 @app.route('/')
 def show_entries():
     entries = get_all_entries()
+    for entry in entries:
+        entry["text"] = markdown.markdown(entry["text"])
     return render_template('list_entries.html', entries=entries)
 
 
