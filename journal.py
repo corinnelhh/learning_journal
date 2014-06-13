@@ -2,6 +2,7 @@
 import os
 import datetime
 import psycopg2
+import pygment
 from flask import Flask, g, render_template, abort
 from flask import request, url_for, redirect, session
 from contextlib import closing
