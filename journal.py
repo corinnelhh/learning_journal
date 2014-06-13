@@ -2,6 +2,7 @@
 import os
 import datetime
 import psycopg2
+import markdown
 from pygments import highlight
 from pygments.lexers import PythonLexer
 from pygments.formatters import HtmlFormatter
@@ -148,6 +149,9 @@ def get_single_entry(id):
 @app.route('/')
 def show_entries():
     entries = get_all_entries()
+    for element in entries:
+        element['text'] = markdown.markdown(element['text'])
+        element
     return render_template('list_entries.html', entries=entries)   
 
 @app.route('/add', methods=['POST'])
@@ -160,15 +164,18 @@ def add_entry():
     
 @app.route('/edit/<int:id>', methods=["GET", "POST"])
 def edit(id):
-    if request.method == 'GET':
-        entry = get_single_entry(id)
+    if 'logged_in' in session:
+        if request.method == 'GET':
+            entry = get_single_entry(id)
+        else:
+            try:
+                update_entry(id, request.form['title'], request.form['text'])
+                return redirect(url_for('show_entries'))
+            except psycopg2.Error:
+                abort(500)
+        return render_template('edit.html', entry=entry)
     else:
-        try:
-            update_entry(id, request.form['title'], request.form['text'])
-            return redirect(url_for('show_entries'))
-        except psycopg2.Error:
-            abort(500)
-    return render_template('edit.html', entry=entry)
+        return redirect(url_for('show_entries'))
 
 if __name__ == '__main__':
     app.run(debug=True)
