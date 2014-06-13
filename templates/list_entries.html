@@ -17,23 +17,23 @@
     </form>
 </aside>
 {% endif %}
-  <h2>Entries</h2>
-  {% for entry in entries %}
-      <article class="entry" id="entry={{entry.id}}">
-        <h3>{{ entry.title }}</h3>
-        <p class="dateline">{{ entry.created.strftime('%b, %d, %Y') }}</p>
-        <div class="entry_body">
-          {{ entry.text|safe }}
+    <h2>Entries</h2>
+    {% for entry in entries %}
+        <article class="entry" id="entry={{entry.id}}">
+            <h3>{{ entry.title }}</h3>
+            <p class="dateline">{{ entry.created.strftime('%b, %d, %Y') }}</p>
+            <div class="entry_body">
+                {{ entry.text|safe }}
+            </div>
+            {% if session.logged_in %}
+                <ul class="edit-links">
+                    <li><a href="edit/{{ entry.id }}">Edit</a></li>
+                </ul>
+            {% endif %}
+        </article>
+    {% else %}
+        <div class="entry">
+            <p><em>No entries here so far</em></p>
         </div>
-        {% if session.logged_in %}
-            <ul class="edit-links">
-                <li><a href="edit/{{ entry.id }}">Edit</a></li>
-            </ul>
-        {% endif %}
-      </article>
-  {% else %}
-  <div class="entry">
-    <p><em>No entries here so far</em></p>
-  </div>
   {% endfor %}
 {% endblock %}

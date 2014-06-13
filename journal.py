@@ -178,15 +178,18 @@ def add_entry():
 
 @app.route('/edit/<int:id>', methods=["GET", "POST"])
 def edit(id):
-    if request.method == 'GET':
-        entry = get_single_entry(id)
+    if 'logged_in' in session:
+        if request.method == 'GET':
+            entry = get_single_entry(id)
+        else:
+            try:
+                update_entry(id, request.form['title'], request.form['text'])
+                return redirect(url_for('show_entries'))
+            except psycopg2.Error:
+                abort(500)
+        return render_template('edit.html', entry=entry)
     else:
-        try:
-            update_entry(id, request.form['title'], request.form['text'])
-            return redirect(url_for('show_entries'))
-        except psycopg2.Error:
-            abort(500)
-    return render_template('edit.html', entry=entry)
+        return redirect(url_for('show_entries'))
 
 
 if __name__ == '__main__':
