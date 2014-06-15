@@ -2,10 +2,12 @@
 import os
 import datetime
 import psycopg2
+import markdown
 from flask import Flask, g, render_template, abort
 from flask import request, url_for, redirect, session
 from contextlib import closing
 from passlib.hash import pbkdf2_sha256
+
 
 DB_SCHEMA = """
 DROP TABLE IF EXISTS entries;
@@ -25,29 +27,24 @@ DB_ENTRIES_LIST = """
 SELECT id, title, text, created FROM entries ORDER BY created DESC
 """
 
+DB_RETURN_BY_ID = """
+SELECT id, title, text, created FROM entries WHERE id = (%s)
+"""
+
+DB_UPDATE_ENTRY = """
+UPDATE entries
+SET title = %s,
+    text = %s,
+    created = %s
+WHERE id = %s
+"""
+
 app = Flask(__name__)
-
-app.config['DATABASE'] = os.environ.get(
-    'DATABASE_URL', 'dbname=learning_journal'
-)
-
-app.config['ADMIN_USERNAME'] = os.environ.get(
-    'ADMIN_USERNAME', 'admin'
-)
-
-app.config['ADMIN_PASSWORD'] = os.environ.get(
-    'ADMIN_PASSWORD', pbkdf2_sha256.encrypt('admin')
-
-)
-
-
-app.config['SECRET_KEY'] = os.environ.get(
-    'FLASK_SECRET_KEY', 'C\x93d\xd8\xe0wcK\xcb\xc3\xd0\xab\x04\xf0\xd0?\xba\xfd\xa0\xbc\xca\xe4a\xd1aE\xcb\x03\xd7T[\xf8'
-)
+app.config.from_object('config')
 
 
 def connect_db():
-    """Return a connection to the configured database"""
+    """ Return a connection to the configured database """
     return psycopg2.connect(app.config['DATABASE'])
 
 
@@ -117,18 +114,53 @@ def write_entry(title, text):
     cur.execute(DB_ENTRY_INSERT, [title, text, now])
 
 
+def update_entry(id, title, text):
+    con = get_database_connection()
+    cur = con.cursor()
+    now = datetime.datetime.utcnow()
+    cur.execute(DB_UPDATE_ENTRY, [title, text, now, id])
+
+
 def get_all_entries():
     """return a list of all entries as dicts"""
     con = get_database_connection()
     cur = con.cursor()
     cur.execute(DB_ENTRIES_LIST)
     keys = ('id', 'title', 'text', 'created')
-    return [dict(zip(keys, row)) for row in cur.fetchall()]
+    rows = cur.fetchall()
+    fixed = []
+    for row in rows:
+        fixed_row = []
+        for idx, val in enumerate(row):
+            if idx in (1, 2):
+                val = val.decode('UTF-8')
+            fixed_row.append(val)
+        fixed.append(fixed_row)
+    return [dict(zip(keys, row)) for row in fixed]
+
+
+def get_single_entry(id):
+    con = get_database_connection()
+    cur = con.cursor()
+    cur.execute(DB_RETURN_BY_ID, [id])
+    keys = ('id', 'title', 'text', 'created')
+    rows = cur.fetchall()
+    fixed = []
+    for row in rows:
+        fixed_row = []
+        for idx, val in enumerate(row):
+            if idx in (1, 2):
+                val = val.decode('UTF-8')
+            fixed_row.append(val)
+        fixed.append(fixed_row)
+    return [dict(zip(keys, row)) for row in fixed]
 
 
 @app.route('/')
 def show_entries():
     entries = get_all_entries()
+    for entry in entries:
+        entry["text"] = markdown.markdown(entry["text"], extensions=["codehilite"])
     return render_template('list_entries.html', entries=entries)
 
 
@@ -139,6 +171,22 @@ def add_entry():
     except psycopg2.Error:
         abort(500)
     return redirect(url_for('show_entries'))
+
+
+@app.route('/edit/<int:id>', methods=["GET", "POST"])
+def edit(id):
+    if 'logged_in' in session:
+        if request.method == 'GET':
+            entry = get_single_entry(id)
+        else:
+            try:
+                update_entry(id, request.form['title'], request.form['text'])
+                return redirect(url_for('show_entries'))
+            except psycopg2.Error:
+                abort(500)
+        return render_template('edit.html', entry=entry)
+    else:
+        return redirect(url_for('show_entries'))
 
 
 if __name__ == '__main__':
