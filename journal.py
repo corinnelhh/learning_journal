@@ -3,10 +3,7 @@ import os
 import datetime
 import psycopg2
 import markdown
-from pygments import highlight
-from pygments.lexers import PythonLexer
-from pygments.formatters import HtmlFormatter
-from flask import Flask, g, render_template, abort
+from flask import Flask, g, render_template, abort, flash
 from flask import request, url_for, redirect, session
 from contextlib import closing
 from passlib.hash import pbkdf2_sha256
@@ -106,6 +103,17 @@ def login():
 def logout():
     session.pop('logged_in', None)
     return redirect(url_for('show_entries'))
+    
+def fix_unicode(rows):
+    fixed = []
+    for row in rows:
+        fixed_row = []
+        for idx, val in enumerate(row):
+            if idx in (1, 2):
+                val = val.decode('UTF-8')
+            fixed_row.append(val)
+        fixed.append(fixed_row)
+    return fixed
 
 
 def write_entry(title, text):
@@ -114,7 +122,7 @@ def write_entry(title, text):
     con = get_database_connection()
     cur = con.cursor()
     now = datetime.datetime.utcnow()
-    cur.execute(DB_ENTRY_INSERT, [title, text, now])
+    cur.execute(DB_ENTRY_INSERT, [title.encode('UTF-8'), text.encode('UTF-8'), now])
 
 
 def update_entry(id, title, text):
@@ -129,17 +137,9 @@ def get_all_entries():
     con = get_database_connection()
     cur = con.cursor()
     cur.execute(DB_ENTRIES_LIST)
+    rows = fix_unicode(cur.fetchall())
     keys = ('id', 'title', 'text', 'created')
-    rows = cur.fetchall()
-    fixed = []
-    for row in rows:
-        fixed_row = []
-        for idx, val in enumerate(row):
-            if idx in (1, 2):
-                val = val.decode('UTF-8')
-            fixed_row.append(val)
-        fixed.append(fixed_row)
-    return [dict(zip(keys, row)) for row in fixed]
+    return [dict(zip(keys, row)) for row in rows]
 
 
 def get_single_entry(id):
@@ -147,23 +147,15 @@ def get_single_entry(id):
     cur = con.cursor()
     cur.execute(DB_RETURN_BY_ID, [id])
     keys = ('id', 'title', 'text', 'created')
-    rows = cur.fetchall()
-    fixed = []
-    for row in rows:
-        fixed_row = []
-        for idx, val in enumerate(row):
-            if idx in (1, 2):
-                val = val.decode('UTF-8')
-            fixed_row.append(val)
-        fixed.append(fixed_row)
-    return [dict(zip(keys, row)) for row in fixed]
+    rows = fix_unicode(cur.fetchall())
+    return [dict(zip(keys, row)) for row in rows]
 
 
 @app.route('/')
 def show_entries():
     entries = get_all_entries()
     for entry in entries:
-        entry["text"] = markdown.markdown(entry["text"])
+        entry['text'] = markdown.markdown(entry['text'], extensions=['codehilite'])
     return render_template('list_entries.html', entries=entries)
 
 
@@ -189,6 +181,7 @@ def edit(id):
                 abort(500)
         return render_template('edit.html', entry=entry)
     else:
+        flash('Please login to edit posts')
         return redirect(url_for('show_entries'))
 
 
