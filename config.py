@@ -1,5 +1,6 @@
 from os import environ
 from passlib.hash import pbkdf2_sha256
+from journal import app
 
 DATABASE = environ.get(
     'DATABASE_URL', 'dbname=learning_journal'
@@ -9,7 +10,7 @@ ADMIN_USERNAME = environ.get(
     'ADMIN_USERNAME', 'admin'
 )
 
-ADMIN_PASSWORD = environ.get(
+app.config['ADMIN_PASSWORD'] = environ.get(
     'ADMIN_PASSWORD', pbkdf2_sha256.encrypt('admin')
 )
 
