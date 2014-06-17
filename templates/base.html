@@ -1,40 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>Python Learning Journal</title>
-    <!--[if lt IE 9]>
-    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" type="text/css">
-    <link href="{{ url_for('static', filename='pygments.css') }}" rel="stylesheet" type="text/css">
-    <script src="{{ url_for('static', filename='js/jquery-1.11.1.min.js') }}"></script>
-  </head>
-  <body>
-    <header>
-      <aside id="user-controls">
-    <ul>
-    {% if not session.logged_in %}
-      <li><a href="{{ url_for('login') }}">log in</a></li>
-    {% else %}
-      <li><a href="{{ url_for('logout') }}">log out</a></li>
-    {% endif %}
-    </ul>
-  </aside>
-      <nav>
+<head>
+<meta charset="utf-8">
+<title>Python Learning Journal</title>
+<!--[if lt IE 9]>
+<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<link href="{{ url_for('static', filename='pygments.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" type="text/css">
+<script src="{{ url_for('static', filename='js/jquery-1.11.1.min.js') }}"></script>
+</head>
+<body>
+<header>
+    <aside id="user-controls">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul>
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
         <ul>
-          <li><a href="/">Home</a></li>
+            {% if not session.logged_in %}
+                <li><a href="{{ url_for('login') }}">log in</a></li>
+            {% else %}
+                <li><a href="{{ url_for('logout') }}">log out</a></li>
+            {% endif %}
         </ul>
-      </nav>
-    </header>
-    <main>
-      <h1>My Python Journal</h1>
-      <section id="content">
-      {% block body %}{% endblock %}
-      </section>
-    </main>
-    <footer>
-      <p>Created in the Code Fellows Python Dev Accelerator</p>
-    </footer>
-  </body>
-</html>
+    </aside>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+        </ul>
+    </nav>
+</header>
+<main>
+    <h1>My Python Journal</h1>
+    <section id="content">
+        {% block body %}{% endblock %}
+    </section>
+</main>
+<footer>
+    <p>Created in the Code Fellows Python Dev Accelerator</p>
+</footer>
+</body>
