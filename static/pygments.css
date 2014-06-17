@@ -1,4 +1,4 @@
-.highlight{background: #2d2d2d;}
+.codehilite{background: #2d2d2d;padding:10px 5px;border-radius:4px;}
 .hll { background-color: #49483e; }
 .c { color: #75715e; } /* Comment */
 .err { color: #960050; background-color: #1e0010; } /* Error */
