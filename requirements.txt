@@ -4,11 +4,14 @@ Markdown==2.4.1
 MarkupSafe==0.23
 Pygments==1.6
 Werkzeug==0.9.4
-argparse==1.2.1
+beautifulsoup4==4.3.2
+fuzzywuzzy==0.2
 gunicorn==18.0
 itsdangerous==0.24
+lettuce==0.2.19
 passlib==1.6.2
 psycopg2==2.5.3
 py==1.4.20
 pytest==2.5.2
+sure==1.2.7
 wsgiref==0.1.2
