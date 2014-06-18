@@ -99,7 +99,7 @@ def do_not_see_edit_button(step):
 def append_edit_to_url(step):
     with app.test_request_context('/'):
         home_url = url_for('show_entries')
-    lettuce.world.manual_url = home_url + "/edit/1"
+    lettuce.world.response = lettuce.world.client.get(home_url + "/edit/1")
 
 
 @lettuce.step('I do not see the edit entry form')
