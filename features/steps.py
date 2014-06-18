@@ -116,12 +116,27 @@ def see_updated_entry(step):
 @lettuce.step('I see my code highlighted in color')
 def see_highlighted_code(step):
     body = lettuce.world.response.data
-    msg = '<p>"This is the first line of text.</p>" in %s'
-    assert 'This is the first line of text.' in body, msg % body
+    msg = '<div class="codehilite"> in %s'
+    assert '<div class="codehilite">' not in body, msg % body
 
 
 @lettuce.step('I see plain text that is not code')
 def do_not_see_colorized_English_text(step):
     body = lettuce.world.response.data
-    msg = '<div class="codehilite"> in %s'
-    assert '<div class="codehilite">' not in body, msg % body
+    msg = '<p>"This is the first line of text.</p>" in %s'
+    assert 'This is the first line of text.' in body, msg % body
+
+
+@lettuce.step('I click on the edit button')
+def click_on_edit_button(step):
+    with app.test_request_context('/'):
+        home_url = url_for('show_entries')
+    edit_url = home_url + "/edit1"
+    lettuce.world.response = lettuce.world.client.get(edit_url)
+
+
+@lettuce.step('I see the edit entry form')
+def see_edit_entry_form(step):
+    body = lettuce.world.response.data
+    msg = 'value="Edit" in %s'
+    assert 'value="Edit"' in body, msg % body

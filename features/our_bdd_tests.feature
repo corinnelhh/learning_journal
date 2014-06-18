@@ -17,8 +17,10 @@ Feature: My Learning Journal
 
     Scenario: Logged-in users can edit posts
         Given a logged-in user
+        And any text
+        And an existing entry
         When I click on the edit button
-        Then I am redirected to the edit entry form
+        Then I see the edit entry form
 
     Scenario: Anonymous users cannot see edit form
         Given an anonymous user
