@@ -124,9 +124,11 @@ def see_highlighted_code(step):
 
 @lettuce.step('I see plain text that is not code')
 def do_not_see_colorized_English_text(step):
-    body = lettuce.world.response.data
-    msg = '<p>"This is the first line of text.</p>" in %s'
-    assert 'This is the first line of text.' in body, msg % body
+    body = "".join(lettuce.world.response.data.split())
+    msg = '<divclass="entry_body"><p>Thisisthefirstlineoftext.</p> in %s'
+    assert '<divclass="entry_body"><p>Thisisthefirstlineoftext.</p>' in body, msg % body
+    msg2 = '<divclass="codehilite"><p>Thisisthefirstlineoftext.</p> in %s'
+    assert '<divclass="codehilite"><p>Thisisthefirstlineoftext.</p>' not in body, msg2 % body
 
 
 @lettuce.step('I click on the edit button')
