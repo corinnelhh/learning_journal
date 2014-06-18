@@ -7,7 +7,7 @@ from test_journal import clear_db, TEST_DSN
 
 @lettuce.before.all
 def setup_app():
-    print "This happens before all the lettuce tests begin"
+    print "Database  initialized."
     app.config['DATABASE'] = TEST_DSN
     app.config['TESTING'] = True
 
@@ -16,7 +16,7 @@ def setup_app():
 
 @lettuce.after.all
 def teardown_app(total):
-    print "This happens after all the lettuce tests have run"
+    print "Database cleared."
     clear_db()
 
 
