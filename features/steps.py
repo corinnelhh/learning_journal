@@ -35,7 +35,7 @@ def anonymous_user(step):
 
 
 @lettuce.step('any text')
-def text_with_markdown_and_prose(step):
+def random_text(step):
     lettuce.world.text = "This is my sample text."
 
 
@@ -92,12 +92,36 @@ def do_not_see_edit_button(step):
     assert 'class="edit-links"' not in body, msg % body
 
 
-@lettuce.step('I am redirected to the home page')
-def redirected_home(step):
+@lettuce.step("I append '/edit1' to the home url")
+def append_edit_to_url(step):
     with app.test_request_context('/'):
         home_url = url_for('show_entries')
-    # assert that we have been redirected to the home page
-    assert lettuce.world.response.status_code in [301, 302]
-    assert lettuce.world.response.location == 'http://localhost' + home_url
-    # now, fetch the homepage so we can finish this off.
-    lettuce.world.response = lettuce.world.client.get(home_url)
+    lettuce.world.manual_url = home_url + "/edit1"
+
+
+@lettuce.step('I do not see the edit entry form')
+def do_not_see_edit_entry_form(step):
+    body = lettuce.world.response.data
+    msg = 'value="Edit" not in %s'
+    assert 'value="Edit"' not in body, msg % body
+
+
+@lettuce.step('I see my updated entry')
+def see_updated_entry(step):
+    body = lettuce.world.response.data
+    for val in [lettuce.world.title, lettuce.world.text]:
+        assert val in body
+
+
+@lettuce.step('I see my code highlighted in color')
+def see_highlighted_code(step):
+    body = lettuce.world.response.data
+    msg = '<p>"This is the first line of text.</p>" in %s'
+    assert 'This is the first line of text.' in body, msg % body
+
+
+@lettuce.step('I see plain text that is not code')
+def do_not_see_colorized_English_text(step):
+    body = lettuce.world.response.data
+    msg = '<div class="codehilite"> in %s'
+    assert '<div class="codehilite">' not in body, msg % body
