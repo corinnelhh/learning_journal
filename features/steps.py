@@ -31,6 +31,8 @@ def logged_in_user(step):
 @lettuce.step('an anonymous user')
 def anonymous_user(step):
     with app.test_client() as client:
+        with client.session_transaction() as sess:
+            sess['logged_in'] = False
         lettuce.world.client = client
 
 
@@ -92,11 +94,11 @@ def do_not_see_edit_button(step):
     assert 'class="edit-links"' not in body, msg % body
 
 
-@lettuce.step("I append '/edit1' to the home url")
+@lettuce.step("I append '/edit/1' to the home url")
 def append_edit_to_url(step):
     with app.test_request_context('/'):
         home_url = url_for('show_entries')
-    lettuce.world.manual_url = home_url + "/edit1"
+    lettuce.world.manual_url = home_url + "/edit/1"
 
 
 @lettuce.step('I do not see the edit entry form')
@@ -117,7 +119,7 @@ def see_updated_entry(step):
 def see_highlighted_code(step):
     body = lettuce.world.response.data
     msg = '<div class="codehilite"> in %s'
-    assert '<div class="codehilite">' not in body, msg % body
+    assert '<div class="codehilite">' in body, msg % body
 
 
 @lettuce.step('I see plain text that is not code')
@@ -131,7 +133,7 @@ def do_not_see_colorized_English_text(step):
 def click_on_edit_button(step):
     with app.test_request_context('/'):
         home_url = url_for('show_entries')
-    edit_url = home_url + "/edit1"
+    edit_url = 'http://localhost' + home_url + "/edit/1"
     lettuce.world.response = lettuce.world.client.get(edit_url)
 
 

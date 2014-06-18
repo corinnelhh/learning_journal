@@ -24,7 +24,7 @@ Feature: My Learning Journal
 
     Scenario: Anonymous users cannot see edit form
         Given an anonymous user
-        When I append '/edit1' to the home url
+        When I append '/edit/1' to the home url
         Then I do not see the edit entry form
 
     Scenario: Logged-in users can save edited posts
@@ -34,8 +34,8 @@ Feature: My Learning Journal
         And I see my updated entry
 
     Scenario: Users can input text with colorized code syntax
-        Given an existing entry
-        And text containing markdown and plain English
-        When I view the homepage
+        Given text containing markdown and plain English
+        And an existing entry
+        When I view the home page
         Then I see my code highlighted in color
         And I see plain text that is not code
