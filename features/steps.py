@@ -55,7 +55,8 @@ def existing_entry(step):
 
 @lettuce.step('text containing markdown and plain English')
 def text_with_markdown_and_prose(step):
-    lettuce.world.text = 'This is the first line of text.\n\n     `code samples here`'
+    lettuce.world.text = \
+        'This is the first line of text.\n\n     `code samples here`'
 
 
 @lettuce.step('I submit the edit form')
@@ -98,7 +99,7 @@ def do_not_see_edit_button(step):
 def append_edit_to_url(step):
     with app.test_request_context('/'):
         home_url = url_for('show_entries')
-    lettuce.world.manual_url = home_url + "/edit/1"
+    lettuce.world.response = lettuce.world.client.get(home_url + "/edit/1")
 
 
 @lettuce.step('I do not see the edit entry form')
@@ -126,9 +127,11 @@ def see_highlighted_code(step):
 def do_not_see_colorized_English_text(step):
     body = "".join(lettuce.world.response.data.split())
     msg = '<divclass="entry_body"><p>Thisisthefirstlineoftext.</p> in %s'
-    assert '<divclass="entry_body"><p>Thisisthefirstlineoftext.</p>' in body, msg % body
+    assert '<divclass="entry_body"><p>Thisisthefirstlineoftext.</p>'\
+        in body, msg % body
     msg2 = '<divclass="codehilite"><p>Thisisthefirstlineoftext.</p> in %s'
-    assert '<divclass="codehilite"><p>Thisisthefirstlineoftext.</p>' not in body, msg2 % body
+    assert '<divclass="codehilite"><p>Thisisthefirstlineoftext.</p>'\
+        not in body, msg2 % body
 
 
 @lettuce.step('I click on the edit button')
