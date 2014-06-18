@@ -3,11 +3,15 @@ Feature: My Learning Journal
 
     Scenario: Logged-in users can see 'edit' button
         Given a logged-in user
+        And any text
+        And an existing entry
         When I view the home page
         Then I see a button to edit posts
 
      Scenario: Anonymous users cannot edit posts
         Given an anonymous user
+        And any text
+        And an existing entry
         When I view the home page
         Then I do not see a button to edit posts
 
@@ -18,7 +22,7 @@ Feature: My Learning Journal
 
     Scenario: Anonymous users cannot see edit form
         Given an anonymous user
-        When I append /edit to the home url
+        When I append '/edit' to the home url
         Then I do not see the edit entry form
 
     Scenario: Logged-in users can save edited posts
@@ -27,8 +31,9 @@ Feature: My Learning Journal
         Then I am redirected to the home page
         And I see my updated entry
 
-    Scenario: Users can input text with syntax colorization on code
-        Given entries containing text in markdown and plain English
-        When I look at the homepage
+    Scenario: Users can input text with colorized code syntax
+        Given an existing entry
+        And text containing markdown and plain English
+        When I view the homepage
         Then I see my code highlighted in color
         And I do not see colorized English text
