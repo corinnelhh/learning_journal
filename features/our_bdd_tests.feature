@@ -28,11 +28,7 @@ Feature: My Learning Journal
         And I see my updated entry
 
     Scenario: Users can input text with syntax colorization on code
-        Given a text containing markdown
+        Given entries containing text in markdown and plain English
         When I look at the homepage
-        Then I see only my code highlighted in color
-
-    Scenario: Users do not see non-code in color
-        Given a text in English
-        When I look at the homepage
-        Then I do not see colorized text
+        Then I see my code highlighted in color
+        And I do not see colorized English text
