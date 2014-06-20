@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block body %}
+        <article class="entry" id="entry={{entry.id}}">
+            <a href="{{ url_for('show_single_entry', id=entry.id) }}"><h3>{{ entry.title }}</h3></a>
+            <p class="dateline">{{ entry.created.strftime('%b, %d, %Y') }}</p>
+            <div class="entry_body">
+                {{ entry.text|safe}}
+            <ul class="share">
+            <li><a href="https://twitter.com/share" data-text="{{ entry.title }}" class="twitter-share-button">Tweet</a></li>
+            </ul>
+                <script>
+                !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id))
+                {js=d.createElement(s);js.id=id;js.src="http://platform.twitter.com/widgets.js";
+                fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+                </script>
+            </div>
+            {% if session.logged_in %}
+                <ul class="edit-links">
+                    <li><a href="edit/{{ entry.id }}">Edit</a></li>
+                </ul>
+            {% endif %}
+        </article>
+{% endblock %}
