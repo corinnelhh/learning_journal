@@ -21,7 +21,7 @@
     <h2>Entries</h2>
     {% for entry in entries %}
         <article class="entry" id="entry={{entry.id}}">
-            <a href="{{ entry.id }}/"><h3>{{ entry.title }}</h3></a>
+            <a href="{{ url_for('show_single_entry', id=entry.id) }}"><h3>{{ entry.title }}</h3></a>
             <p class="dateline">{{ entry.created.strftime('%b, %d, %Y') }}</p>
             <div class="entry_body">
                 {{ entry.text|safe}}

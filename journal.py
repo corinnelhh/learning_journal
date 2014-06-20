@@ -160,10 +160,10 @@ def show_entries():
 
 
 @app.route('/<int:id>', methods=["GET"])
-def show_single_entry():
-    entry = get_single_entry()
+def show_single_entry(id):
+    entry = get_single_entry(id)[0]
     entry['text'] = markdown.markdown(entry['text'], extensions=['codehilite'])
-    return render_template('list_entries.html', entries=entry)
+    return render_template('list_entry.html', entry=entry)
 
 
 @app.route('/add', methods=['POST'])
