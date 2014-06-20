@@ -80,8 +80,8 @@ def teardown_request(exception):
 def do_login(username='', passwd=''):
     if username != app.config['ADMIN_USERNAME']:
         raise ValueError
-   # if not pbkdf2_sha256.verify(passwd, app.config['ADMIN_PASSWORD']):
-   #     raise ValueError
+    if not pbkdf2_sha256.verify(passwd, app.config['ADMIN_PASSWORD']):
+        raise ValueError
     session['logged_in'] = True
 
 
@@ -103,7 +103,8 @@ def login():
 def logout():
     session.pop('logged_in', None)
     return redirect(url_for('show_entries'))
-    
+
+
 def fix_unicode(rows):
     fixed = []
     for row in rows:

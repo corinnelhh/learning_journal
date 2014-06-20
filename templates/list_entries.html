@@ -26,7 +26,8 @@
             <div class="entry_body">
                 {{ entry.text|safe}}
             <ul class="share">
-            <li><a href="https://twitter.com/share" data-text="{{ entry.title }}" class="twitter-share-button">Tweet</a></li>
+            <li><a href="https://twitter.com/share" data-text="{{ entry.title }}"
+                    data-url="{{ url_for('show_single_entry', id=entry.id) }}" class="twitter-share-button">Tweet</a></li>
             </ul>
                 <script>
                 !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id))
