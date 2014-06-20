@@ -80,8 +80,8 @@ def teardown_request(exception):
 def do_login(username='', passwd=''):
     if username != app.config['ADMIN_USERNAME']:
         raise ValueError
- #   if not pbkdf2_sha256.verify(passwd, app.config['ADMIN_PASSWORD']):
-  #      raise ValueError
+   # if not pbkdf2_sha256.verify(passwd, app.config['ADMIN_PASSWORD']):
+   #     raise ValueError
     session['logged_in'] = True
 
 
@@ -157,6 +157,13 @@ def show_entries():
     for entry in entries:
         entry['text'] = markdown.markdown(entry['text'], extensions=['codehilite'])
     return render_template('list_entries.html', entries=entries)
+
+
+@app.route('/<int:id>', methods=["GET"])
+def show_single_entry():
+    entry = get_single_entry()
+    entry['text'] = markdown.markdown(entry['text'], extensions=['codehilite'])
+    return render_template('list_entries.html', entries=entry)
 
 
 @app.route('/add', methods=['POST'])
