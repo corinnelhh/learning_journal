@@ -21,12 +21,12 @@
     <h2>Entries</h2>
     {% for entry in entries %}
         <article class="entry" id="entry={{entry.id}}">
-            <a href="{{ url_for('show_single_entry', id=entry.id) }}"><h3>{{ entry.title }}</h3></a>
+            <a href="{{url_for('show_single_entry', id=entry.id)}}"><h3>{{ entry.title }}</h3></a>
             <p class="dateline">{{ entry.created.strftime('%b, %d, %Y') }}</p>
             <div class="entry_body">
                 {{ entry.text|safe}}
             <ul class="share">
-            <li><a href="https://twitter.com/share/" data-text="{{ entry.title }}"
+            <li><a href="https://twitter.com/share/" data-text="{{entry.title}}"
                    class="twitter-share-button">Tweet</a></li>
             </ul>
                 <script>
@@ -38,7 +38,9 @@
             {% if session.logged_in %}
                 <ul class="edit-links">
                     <li><a href="edit/{{ entry.id }}">Edit</a></li>
+                    <li><a href="{{url_for('delete_entry', id=entry.id)}}">Delete</a></li>
                 </ul>
+                </script>
             {% endif %}
         </article>
     {% else %}
