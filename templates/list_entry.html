@@ -17,6 +17,7 @@
             {% if session.logged_in %}
                 <ul class="edit-links">
                     <li><a href="edit/{{ entry.id }}">Edit</a></li>
+                    <li><a href="{{url_for('delete_entry', id=entry.id)}}" class='confirmation'>Delete</a></li>
                 </ul>
             {% endif %}
         </article>
