@@ -82,7 +82,7 @@ def view_the_homepage(step):
 @lettuce.step('I see a button to edit posts')
 def see_edit_button(step):
     body = lettuce.world.response.data
-    msg = " 'edit' button in %s"
+    msg = " 'edit' button not in %s"
     assert '<a href="edit/1">Edit</a>' in body, msg % body
     assert 'class="edit-links"' in body, msg % body
 
@@ -105,7 +105,7 @@ def append_edit_to_url(step):
 @lettuce.step('I do not see the edit entry form')
 def do_not_see_edit_entry_form(step):
     body = lettuce.world.response.data
-    msg = 'value="Edit" not in %s'
+    msg = 'value="Edit" in %s'
     assert 'value="Edit"' not in body, msg % body
 
 
@@ -119,17 +119,17 @@ def see_updated_entry(step):
 @lettuce.step('I see my code highlighted in color')
 def see_highlighted_code(step):
     body = lettuce.world.response.data
-    msg = '<div class="codehilite"> in %s'
+    msg = '<div class="codehilite"> not in %s'
     assert '<div class="codehilite">' in body, msg % body
 
 
 @lettuce.step('I see plain text that is not code')
 def do_not_see_colorized_English_text(step):
     body = "".join(lettuce.world.response.data.split())
-    msg = '<divclass="entry_body"><p>Thisisthefirstlineoftext.</p> in %s'
+    msg = '<divclass="entry_body"><p>Thisisthefirstlineoftext.</p> not in %s'
     assert '<divclass="entry_body"><p>Thisisthefirstlineoftext.</p>'\
         in body, msg % body
-    msg2 = '<divclass="codehilite"><p>Thisisthefirstlineoftext.</p> in %s'
+    msg2 = '<divclass="codehilite"><p>Thisisthefirstlineoftext.</p> not in %s'
     assert '<divclass="codehilite"><p>Thisisthefirstlineoftext.</p>'\
         not in body, msg2 % body
 
@@ -145,25 +145,20 @@ def click_on_edit_button(step):
 @lettuce.step('I see the edit entry form')
 def see_edit_entry_form(step):
     body = lettuce.world.response.data
-    msg = 'value="Edit" in %s'
+    msg = 'value="Edit" not in %s'
     assert 'value="Edit"' in body, msg % body
 
 
 @lettuce.step('I see a button to tweet each post')
 def see_twitter_button(step):
     body = lettuce.world.response.data
-    msg = " 'Tweet' button not in %s"
-    assert 'href="https://twitter.com/share"' in body, msg % body
-    assert 'class="share"' in body, msg % body
+    msg = "'Tweet' button not in %s"
+    assert 'class="twitter-share-button"' in body, msg % body
 
 
-@lettuce.step('I click the "Tweet" button')
-def click_on_tweet_button(step):
-    lettuce.world.response = lettuce.world.client.get('https://twitter.com/share')
-
-
-@lettuce.step('I am redirected to the Twitter page')
+@lettuce.step('it will autofill the post title')
 def see_twitter_page(step):
-    body = "".join(lettuce.world.response.data.split())
-    assert '<h2class="action-information">Share a link with your followers</h2>' in body
+    body = lettuce.world.response.data
+    msg = "post title not in %s"
+    assert 'data-text="My Title"' in body, msg % body
 

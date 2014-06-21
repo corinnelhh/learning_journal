@@ -42,11 +42,9 @@ Feature: My Learning Journal
 
     Scenario: All users see a button to tweet a post
         Given an anonymous user
+        And any text
+        And an existing entry
         When I view the home page
         Then I see a button to tweet each post
+        And it will autofill the post title
 
-    Scenario: Users can click on the button and are redirected to Twitter
-        Given an anonymous user
-        When I click the "Tweet" button
-        Then I am redirected to the Twitter page
-        And I see the post title and a link to the journal
