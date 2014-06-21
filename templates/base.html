@@ -9,51 +9,42 @@
 <link href="{{ url_for('static', filename='pygments.css') }}" rel="stylesheet" type="text/css">
 <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" type="text/css">
 <link href="{{ url_for('static', filename='fonts/ubuntumono-r.css') }}" rel="stylesheet" type="text/css">
-<style>
-    @font-face {
-    font-family: Ubuntu;
-    src: url('{{ url_for('static', filename='fonts/ubuntumono-r.eot') }});
-    src: url('{{ url_for('static', filename='fonts/ubuntumono-r.eot') }}') format('embedded-opentype'),
-         url('{{ url_for('static', filename='fonts/ubuntumono-r.woff') }}') format('woff'),
-         url('{{ url_for('static', filename='fonts/ubuntumono-r.ttf') }}') format('truetype'),
-         url('{{ url_for('static', filename='fonts/ubuntumono-r.svg') }}'#UbuntuMonoRegular') format('svg');
-}
-</style>
+<link href='http://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
 <script src="{{ url_for('static', filename='js/jquery-1.11.1.min.js') }}"></script>
 </head>
 <body>
+<div id="bg">
 <header>
-    <aside id="user-controls">
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <ul>
-                    {% for message in messages %}
-                        <li>{{ message }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        {% endwith %}
-        <ul>
-            {% if not session.logged_in %}
-                <li><a href="{{ url_for('login') }}">log in</a></li>
-            {% else %}
-                <li><a href="{{ url_for('logout') }}">log out</a></li>
-            {% endif %}
-        </ul>
-    </aside>
-    <nav>
-        <ul>
-            <li><a href="/">Home</a></li>
-        </ul>
+    <nav class="nav navbar">
+    <h1><a href="/">My Python Journal</a></h1>
+        <aside id="user-controls">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <ul class="flash">
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+            <ul>
+                {% if not session.logged_in %}
+                    <li><a href="{{ url_for('login') }}">log in</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('logout') }}">log out</a></li>
+                {% endif %}
+            </ul>
+        </aside>
     </nav>
 </header>
-<main>
-    <h1>My Python Journal</h1>
+<main id="wrapper">
     <section id="content">
         {% block body %}{% endblock %}
     </section>
 </main>
+<div class="push"></div>
 <footer>
     <p>Created in the Code Fellows Python Dev Accelerator</p>
 </footer>
+</div>
 </body>

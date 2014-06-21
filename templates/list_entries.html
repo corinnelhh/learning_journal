@@ -17,11 +17,15 @@
     </form>
 </aside>
 {% endif %}
-    <h2>Entries</h2>
     {% for entry in entries %}
         <article class="entry" id="entry={{entry.id}}">
             <h3>{{ entry.title }}</h3>
-            <p class="dateline">{{ entry.created.strftime('%b, %d, %Y') }}</p>
+            <div class="dateline">
+                <div class="date">
+                    <p class="month">{{ entry.created.strftime('%b') }}</p>
+                    <p class="day">{{ entry.created.strftime('%d') }}</p>
+                </div>
+            </div>
             <div class="entry_body">
                 {{ entry.text|safe }}
             </div>
