@@ -39,6 +39,10 @@ SET title = %s,
 WHERE id = %s
 """
 
+DB_DELETE_ENTRY = """
+DELETE FROM entries WHERE id = (%s)
+"""
+
 app = Flask(__name__)
 app.config.from_object('config')
 
@@ -131,6 +135,18 @@ def update_entry(id, title, text):
     cur = con.cursor()
     now = datetime.datetime.utcnow()
     cur.execute(DB_UPDATE_ENTRY, [title, text, now, id])
+
+
+@app.route('/delete/<int:id>', methods=['GET', 'POST'])
+def delete_entry(id):
+    if 'logged_in' in session:
+        con = get_database_connection()
+        cur = con.cursor()
+        cur.execute(DB_DELETE_ENTRY, [id])
+        return redirect(url_for('show_entries'))
+    else:
+        flash('Please log in to modify posts')
+        return redirect(url_for('show_entries'))
 
 
 def get_all_entries():
