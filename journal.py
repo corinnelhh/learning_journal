@@ -84,8 +84,8 @@ def teardown_request(exception):
 def do_login(username='', passwd=''):
     if username != app.config['ADMIN_USERNAME']:
         raise ValueError
-    #if not pbkdf2_sha256.verify(passwd, app.config['ADMIN_PASSWORD']):
-    #    raise ValueError
+    if not pbkdf2_sha256.verify(passwd, app.config['ADMIN_PASSWORD']):
+        raise ValueError
     session['logged_in'] = True
 
 
