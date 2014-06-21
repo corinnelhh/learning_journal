@@ -147,3 +147,23 @@ def see_edit_entry_form(step):
     body = lettuce.world.response.data
     msg = 'value="Edit" in %s'
     assert 'value="Edit"' in body, msg % body
+
+
+@lettuce.step('I see a button to tweet each post')
+def see_twitter_button(step):
+    body = lettuce.world.response.data
+    msg = " 'Tweet' button not in %s"
+    assert 'href="https://twitter.com/share"' in body, msg % body
+    assert 'class="share"' in body, msg % body
+
+
+@lettuce.step('I click the "Tweet" button')
+def click_on_tweet_button(step):
+    lettuce.world.response = lettuce.world.client.get('https://twitter.com/share')
+
+
+@lettuce.step('I am redirected to the Twitter page')
+def see_twitter_page(step):
+    body = "".join(lettuce.world.response.data.split())
+    assert '<h2class="action-information">Share a link with your followers</h2>' in body
+
