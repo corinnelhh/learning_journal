@@ -3,11 +3,14 @@ import os
 import datetime
 import psycopg2
 import markdown
-from flask import Flask, g, render_template, abort
-from flask import request, url_for, redirect, session
+from flask import Flask, g, render_template, abort, flash
+from flask import request, url_for, redirect, session, jsonify
 from contextlib import closing
 from passlib.hash import pbkdf2_sha256
 
+
+psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
+psycopg2.extensions.register_type(psycopg2.extensions.UNICODEARRAY)
 
 DB_SCHEMA = """
 DROP TABLE IF EXISTS entries;
@@ -105,13 +108,25 @@ def logout():
     return redirect(url_for('show_entries'))
 
 
+def fix_unicode(rows):
+    fixed = []
+    for row in rows:
+        fixed_row = []
+        for idx, val in enumerate(row):
+            if idx in (1, 2):
+                val = val.decode('UTF-8')
+            fixed_row.append(val)
+        fixed.append(fixed_row)
+    return fixed
+
+
 def write_entry(title, text):
     if not title or not text:
         raise ValueError("Title and text required for writing an entry")
     con = get_database_connection()
     cur = con.cursor()
     now = datetime.datetime.utcnow()
-    cur.execute(DB_ENTRY_INSERT, [title, text, now])
+    cur.execute(DB_ENTRY_INSERT, [title.encode('UTF-8'), text.encode('UTF-8'), now])
 
 
 def update_entry(id, title, text):
@@ -127,16 +142,7 @@ def get_all_entries():
     cur = con.cursor()
     cur.execute(DB_ENTRIES_LIST)
     keys = ('id', 'title', 'text', 'created')
-    rows = cur.fetchall()
-    fixed = []
-    for row in rows:
-        fixed_row = []
-        for idx, val in enumerate(row):
-            if idx in (1, 2):
-                val = val.decode('UTF-8')
-            fixed_row.append(val)
-        fixed.append(fixed_row)
-    return [dict(zip(keys, row)) for row in fixed]
+    return [dict(zip(keys, row)) for row in cur.fetchall()]
 
 
 def get_single_entry(id):
@@ -144,24 +150,24 @@ def get_single_entry(id):
     cur = con.cursor()
     cur.execute(DB_RETURN_BY_ID, [id])
     keys = ('id', 'title', 'text', 'created')
-    rows = cur.fetchall()
-    fixed = []
-    for row in rows:
-        fixed_row = []
-        for idx, val in enumerate(row):
-            if idx in (1, 2):
-                val = val.decode('UTF-8')
-            fixed_row.append(val)
-        fixed.append(fixed_row)
-    return [dict(zip(keys, row)) for row in fixed]
+    return dict(zip(keys, cur.fetchone()))
 
 
 @app.route('/')
 def show_entries():
     entries = get_all_entries()
     for entry in entries:
-        entry["text"] = markdown.markdown(entry["text"], extensions=["codehilite"])
+        entry['text'] = markdown.markdown(entry['text'], extensions=['codehilite'])
     return render_template('list_entries.html', entries=entries)
+    
+def get_posts():
+    return render_template('posts.html')
+
+@app.route('/<int:id>', methods=["GET"])
+def show_single_entry(id):
+    entry = get_single_entry(id)[0]
+    entry['text'] = markdown.markdown(entry['text'], extensions=['codehilite(linenums=false)'])
+    return render_template('list_entry.html', entry=entry)
 
 
 @app.route('/add', methods=['POST'])
@@ -184,8 +190,10 @@ def edit(id):
                 return redirect(url_for('show_entries'))
             except psycopg2.Error:
                 abort(500)
-        return render_template('edit.html', entry=entry)
+        print(entry)
+        return jsonify(title=entry["title"], text=entry["text"])
     else:
+        flash('Please login to edit posts')
         return redirect(url_for('show_entries'))
 
 

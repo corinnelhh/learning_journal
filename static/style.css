@@ -1,6 +1,6 @@
 /*
 red: #D93537
-white: #fefff7
+white: #fffef9
 green: #00585F
 grey: #6A6A61
 black: #272928
@@ -20,8 +20,12 @@ body{
     height: 100%;
 }
 
+ul, li, ol {
+    list-style: none;
+}
+
 #bg {
-    background: rgba(255,253,209, .92);
+    background: rgba(255,254,249, .92);
     min-height: 100%;
 	height: auto !important;
 	height: 100%;
@@ -87,7 +91,7 @@ nav {
 }
 
 #wrapper {
-    background: rgba(255,253,209, .45);
+    background: rgba(255,254,249, .45);
     height: 100%;
 }
 
@@ -139,6 +143,10 @@ main aside .field textarea{
 }
 main aside .control_row input{
     margin-left:16%;
+}
+
+.entry {
+    border-bottom: 1px solid rgba(0,0,0,.05);
 }
 
 .dateline {
