@@ -159,9 +159,7 @@ def show_entries():
     for entry in entries:
         entry['text'] = markdown.markdown(entry['text'], extensions=['codehilite'])
     return render_template('list_entries.html', entries=entries)
-    
-def get_posts():
-    return render_template('posts.html')
+
 
 @app.route('/<int:id>', methods=["GET"])
 def show_single_entry(id):
@@ -190,7 +188,6 @@ def edit(id):
                 return redirect(url_for('show_entries'))
             except psycopg2.Error:
                 abort(500)
-        print(entry)
         return jsonify(title=entry["title"], text=entry["text"])
     else:
         flash('Please login to edit posts')

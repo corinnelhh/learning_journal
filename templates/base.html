@@ -18,9 +18,8 @@
 <body>
 <div id="bg">
     <header>
-        <div id="test">AJAX goes here</div>
         <nav class="nav navbar">
-        <h1><a href="/">My Python Journal</a></h1>
+            <h1><a href="/">My Python Journal</a></h1>
             <aside id="user-controls">
                 {% with messages = get_flashed_messages() %}
                     {% if messages %}
@@ -42,7 +41,6 @@
         </nav>
     </header>
     <main id="wrapper">
-    <script src="{{ url_for('static', filename='js/jquery-1.11.1.min.js') }}"></script>
     </head>
     <main>
         <section id="content">
@@ -57,24 +55,37 @@
 {% block modal %}
 {% endblock %}
 <script>
-var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
-$(document).ready(function() { 
-  
-});
-$(".edit-post-btn").on("click", function() {
-    var id = $(this).data("id");
-    var url = $SCRIPT_ROOT + "/edit/" + id;
-    $("#post-form").attr("action", "/edit/" + id);
-    $.ajax({
-        url : url,
-        success: function(response) {
-            $("#test").html(response);
-        }
+    var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    $(document).ready(function() { 
+      
     });
-});
-//$("#save-post-btn").on("click", )
-$("#new-post-btn").on("click", function() {
-    $("#post-form").attr("action", "{{url_for('add_entry')}}");
-});
+    $(".edit-post-btn").on("click", function() {
+        var id = $(this).data("id");
+        var url = $SCRIPT_ROOT + "/edit/" + id;
+        $("#post-form").attr("action", "/edit/" + id);
+        $.ajax({
+            url : url,
+            success: function(response) {
+                $("#title").val(response.title);
+                $("#text").val(response.text);
+            }
+        });
+    });
+    $("#post-form").on("submit", function(event){
+        event.preventDefault();
+        var url = $("#post-form").attr("action");
+        $.ajax({
+            url : url,
+            type : 'POST',
+            data : $("#post-form").serialize(),
+            success: function(response) {
+                $(".posts").html(response);
+            }
+        });
+    });
+    $("#new-post-btn").on("click", function() {
+        $("#post-form").attr("action", "{{url_for('add_entry')}}");
+    });
 </script>
+<script src="{{ url_for('static', filename='js/jquery-1.11.1.min.js') }}"></script>
 </body>
