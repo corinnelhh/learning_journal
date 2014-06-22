@@ -21,13 +21,13 @@
     <h2>Entries</h2>
     {% for entry in entries %}
         <article class="entry" id="entry={{entry.id}}">
-            <a href="{{ url_for('show_single_entry', id=entry.id) }}"><h3>{{ entry.title }}</h3></a>
+            <a href="{{url_for('show_single_entry', id=entry.id)}}"><h3>{{ entry.title }}</h3></a>
             <p class="dateline">{{ entry.created.strftime('%b, %d, %Y') }}</p>
             <div class="entry_body">
                 {{ entry.text|safe}}
             <ul class="share">
-            <a href="https://twitter.com/share/" data-text="{{ entry.title }}"
-                   class="twitter-share-button" name="Tweet">Tweet</a>
+            <li><a href="https://twitter.com/share/" data-url="http://127.0.0.1:5000/{{entry.id}}" data-text="{{entry.title}}"
+                   class="twitter-share-button">Tweet</a></li>
             </ul>
                 <script>
                 !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id))
@@ -38,7 +38,14 @@
             {% if session.logged_in %}
                 <ul class="edit-links">
                     <li><a href="edit/{{ entry.id }}">Edit</a></li>
+                    <li><a href="{{url_for('delete_entry', id=entry.id)}}" onclick="return confirmDelete()">Delete</a></li>
                 </ul>
+                <script>
+                    function confirmDelete(){
+                    var confirmed = confirm("Please confirm you want to delete this entry! Once deleted, it cannot be restored.");
+                    return confirmed;
+                    }
+                </script>
             {% endif %}
         </article>
     {% else %}

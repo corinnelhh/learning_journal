@@ -10,7 +10,7 @@ ADMIN_USERNAME = environ.get(
     'ADMIN_USERNAME', 'admin'
 )
 
-app.config['ADMIN_PASSWORD'] = environ.get(
+ADMIN_PASSWORD = environ.get(
     'ADMIN_PASSWORD', pbkdf2_sha256.encrypt('admin')
 )
 

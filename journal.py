@@ -39,6 +39,10 @@ SET title = %s,
 WHERE id = %s
 """
 
+DB_DELETE_ENTRY = """
+DELETE FROM entries WHERE id = (%s)
+"""
+
 app = Flask(__name__)
 app.config.from_object('config')
 
@@ -133,6 +137,18 @@ def update_entry(id, title, text):
     cur.execute(DB_UPDATE_ENTRY, [title, text, now, id])
 
 
+@app.route('/delete/<int:id>', methods=['GET', 'POST'])
+def delete_entry(id):
+    if 'logged_in' in session:
+        con = get_database_connection()
+        cur = con.cursor()
+        cur.execute(DB_DELETE_ENTRY, [id])
+        return redirect(url_for('show_entries'))
+    else:
+        flash('Please log in to modify posts')
+        return redirect(url_for('show_entries'))
+
+
 def get_all_entries():
     """return a list of all entries as dicts"""
     con = get_database_connection()
@@ -146,11 +162,13 @@ def get_all_entries():
 def get_single_entry(id):
     con = get_database_connection()
     cur = con.cursor()
-    cur.execute(DB_RETURN_BY_ID, [id])
-    keys = ('id', 'title', 'text', 'created')
-    rows = fix_unicode(cur.fetchall())
-    return [dict(zip(keys, row)) for row in rows]
-
+    try:
+        cur.execute(DB_RETURN_BY_ID, [id])
+        keys = ('id', 'title', 'text', 'created')
+        rows = fix_unicode(cur.fetchall())
+        return [dict(zip(keys, row)) for row in rows]
+    except IndexError:
+        return
 
 @app.route('/')
 def show_entries():
@@ -162,9 +180,12 @@ def show_entries():
 
 @app.route('/<int:id>', methods=["GET"])
 def show_single_entry(id):
-    entry = get_single_entry(id)[0]
-    entry['text'] = markdown.markdown(entry['text'], extensions=['codehilite'])
-    return render_template('list_entry.html', entry=entry)
+    try:
+        entry = get_single_entry(id)[0]
+        entry['text'] = markdown.markdown(entry['text'], extensions=['codehilite'])
+        return render_template('list_entry.html', entry=entry)
+    except IndexError:
+        return redirect(url_for('show_entries'))
 
 
 @app.route('/add', methods=['POST'])
@@ -181,16 +202,19 @@ def edit(id):
     if 'logged_in' in session:
         if request.method == 'GET':
             entry = get_single_entry(id)
+            try:
+                return render_template('edit.html', entry=entry)
+            except Exception:
+                flash('No such entry in the database')
+                return redirect(url_for('show_entries'))
         else:
             try:
                 update_entry(id, request.form['title'], request.form['text'])
                 return redirect(url_for('show_entries'))
             except psycopg2.Error:
                 abort(500)
-        return render_template('edit.html', entry=entry)
-    else:
-        flash('Please login to edit posts')
-        return redirect(url_for('show_entries'))
+    flash('Please login to edit posts')
+    return redirect(url_for('show_entries'))
 
 
 if __name__ == '__main__':
