@@ -3,7 +3,7 @@ import lettuce
 from flask import url_for
 from journal import app, init_db
 from test_journal import clear_db, TEST_DSN
-
+from splinter import Browser
 
 @lettuce.before.all
 def setup_app():
@@ -156,9 +156,9 @@ def see_twitter_button(step):
     assert 'class="twitter-share-button"' in body, msg % body
 
 
-@lettuce.step('it will autofill the post title')
-def see_twitter_page(step):
-    body = lettuce.world.response.data
-    msg = "post title not in %s"
-    assert 'data-text="My Title"' in body, msg % body
-
+@lettuce.step('I click on the "tweet" button')
+def click_on_tweet_button(step):
+    with Browser() as browser:
+        browser.visit("http://blooming-peak-9817.herokuapp.com/")
+        browser.find_by_name('Tweet').first().click()
+    #assert browser.is_text_present('Share a link with your followers')
