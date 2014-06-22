@@ -17,8 +17,15 @@
             {% if session.logged_in %}
                 <ul class="edit-links">
                     <li><a href="edit/{{ entry.id }}">Edit</a></li>
-                    <li><a href="{{url_for('delete_entry', id=entry.id)}}" class='confirmation'>Delete</a></li>
+                    <li><a href="{{url_for('delete_entry', id=entry.id)}}" onclick="return confirmDelete()">Delete</a></li>
+
                 </ul>
+                <script>
+                    function confirmDelete(){
+                    var confirmed = confirm("Please confirm you want to delete this entry! Once deleted, it cannot be restored.");
+                    return confirmed;
+                    }
+                </script>
             {% endif %}
         </article>
 {% endblock %}
