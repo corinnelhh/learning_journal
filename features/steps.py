@@ -155,10 +155,3 @@ def see_twitter_button(step):
     msg = "'Tweet' button not in %s"
     assert 'class="twitter-share-button"' in body, msg % body
 
-
-@lettuce.step('I click on the "tweet" button')
-def click_on_tweet_button(step):
-    with Browser() as browser:
-        browser.visit("http://blooming-peak-9817.herokuapp.com/")
-        browser.find_by_name('Tweet').first().click()
-    #assert browser.is_text_present('Share a link with your followers')
