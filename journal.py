@@ -112,18 +112,6 @@ def logout():
     return redirect(url_for('show_entries'))
 
 
-def fix_unicode(rows):
-    fixed = []
-    for row in rows:
-        fixed_row = []
-        for idx, val in enumerate(row):
-            if idx in (1, 2):
-                val = val.decode('UTF-8')
-            fixed_row.append(val)
-        fixed.append(fixed_row)
-    return fixed
-
-
 def write_entry(title, text):
     if not title or not text:
         raise ValueError("Title and text required for writing an entry")
@@ -173,7 +161,7 @@ def get_single_entry(id):
 def show_entries():
     entries = get_all_entries()
     for entry in entries:
-        entry['text'] = markdown.markdown(entry['text'], extensions=['codehilite(linenums=False)'])
+        entry['text'] = markdown.markdown(entry['text'], extensions=['codehilite'])
     return render_template('list_entries.html', entries=entries)
 
 
@@ -181,7 +169,7 @@ def show_entries():
 def show_single_entry(id):
     try:
         entry = get_single_entry(id)[0]
-        entry['text'] = markdown.markdown(entry['text'], extensions=['codehilite(linenums=false)'])
+        entry['text'] = markdown.markdown(entry['text'], extensions=['codehilite'])
         return render_template('list_entry.html', entry=entry)
     except IndexError:
         return redirect(url_for('show_entries'))
@@ -190,10 +178,13 @@ def show_single_entry(id):
 @app.route('/add', methods=['POST'])
 def add_entry():
     try:
-        write_entry(request.form['title'], request.form['text'])
+        title = request.form['title']
+        text = request.form['text']
+        write_entry(title, text)
+        return jsonify(title=title, text=text)
     except psycopg2.Error:
         abort(500)
-    return redirect(url_for('show_entries'))
+        return redirect(url_for('show_entries'))
 
 
 @app.route('/edit/<int:id>', methods=["GET", "POST"])
@@ -202,27 +193,21 @@ def edit(id):
         if request.method == 'GET':
             entry = get_single_entry(id)
             try:
-                return render_template('edit.html', entry=entry)
+                return jsonify(title=entry["title"], text=entry["text"])
             except Exception:
                 flash('No such entry in the database')
                 return redirect(url_for('show_entries'))
         else:
             try:
-                update_entry(id, request.form['title'], request.form['text'])
-                return redirect(url_for('show_entries'))
+                title = request.form.get('title', False)
+                text = request.form.get('text', False)
+                update_entry(id,title,text)
+                return jsonify({'title': title, 'text': text})
             except psycopg2.Error:
                 abort(500)
-        return jsonify(title=entry["title"], text=entry["text"])
     else:
         flash('Please login to edit posts')
         return redirect(url_for('show_entries'))
-
-
-def update_posts():
-    entries = get_all_entries()
-    for entry in entries:
-        entry['text'] = markdown.markdown(entry['text'], extensions=['codehilite'])
-    return render_template('posts.html', entries=entries)
 
 
 if __name__ == '__main__':

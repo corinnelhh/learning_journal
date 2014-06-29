@@ -7,12 +7,11 @@ black: #272928
 */
 
 html {
-    background-image: url('img/canvas_bg.jpg') ;
     height: 100%;
 }
 
 body{
-    
+    background-image: url('img/canvas_bg.jpg') ;
     color:#272928;
     padding:0;
     margin:0;
@@ -25,7 +24,7 @@ ul, li, ol {
 }
 
 #bg {
-    background: rgba(255,254,249, .92);
+    background: rgba(255,254,249, .7);
     min-height: 100%;
 	height: auto !important;
 	height: 100%;
@@ -79,10 +78,6 @@ header ul li a{
     color: #fefff7;
     padding:0;
     display:inline-block;
-}
-
-nav {
-    
 }
 
 #site-nav li {
@@ -155,10 +150,6 @@ main aside .control_row input{
     border-radius: 50%;
     background: #00585F;
     text-align: center;
-}
-
-.date {
-    
 }
 
 .month, .day {

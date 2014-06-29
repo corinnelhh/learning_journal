@@ -55,35 +55,48 @@
 {% endblock %}
 <script>
     var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
-    $(document).ready(function() {
-    });
+    var form = $("#post-form");
+    var action_type;
+    var post;
+
     $(".edit-post-btn").on("click", function() {
         var id = $(this).data("id");
         var url = $SCRIPT_ROOT + "/edit/" + id;
-        $("#post-form").attr("action", "/edit/" + id);
-        $.ajax({
-            url : url,
-            success: function(response) {
+        action_type = 'edit';
+        post = $(this);
+        $.ajax(url, {
+            data: form.serialize(),
+            success: function(response){
                 $("#title").val(response.title);
                 $("#text").val(response.text);
             }
         });
+        form.attr("action", "/edit/" + id);
+        $("#title").val(title);
+        $("#text").val(text);
     });
-    $("#post-form").on("submit", function(event){
+    form.on("submit", function(event){
         event.preventDefault();
-        $('#post-modal').modal('hide');
-        var url = $("#post-form").attr("action");
         $.ajax({
-            url : url,
+            url : form.attr("action"),
             type : 'POST',
-            data : $("#post-form").serialize(),
+            data : form.serialize(),
             success: function(response) {
-                $(".posts").html(response).fadeIn();
+                if(action_type == 'edit'){
+                    post.closest("article").find(".title").text(response.title);
+                    post.closest("article").find(".entry_body").text(response.text);
+                }
+                else{
+                    $(".posts").prepend("<h2>" + response.title + "</h2><p>" + response.text + "</p>").fadeIn();
+                }
+                form[0].reset();
             }
         });
+        $("#post-modal").modal("hide");
     });
     $("#new-post-btn").on("click", function() {
-        $("#post-form").attr("action", "{{url_for('add_entry')}}");
+        form.attr("action", "{{url_for('add_entry')}}");
+        action_type = 'new';
     });
 </script>
 <script src="{{ url_for('static', filename='js/jquery-1.11.1.min.js') }}"></script>

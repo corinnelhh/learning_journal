@@ -1,6 +1,6 @@
 {% for entry in entries %}
     <article class="entry" id="entry={{entry.id}}">
-        <h2>{{ entry.title }}</h2>
+        <h2 class="title">{{ entry.title }}</h2>
         <div class="dateline">
             <div class="date">
                 <p class="month">{{ entry.created.strftime('%b') }}</p>
@@ -9,20 +9,18 @@
         </div>
         <div class="entry_body">
             {{ entry.text|safe}}
-            <ul class="share">
-                <li>
-                    <a href="https://twitter.com/share" class="twitter-share-button" data-url="https://{{url_for('show_entries')}}/{{entry.id}}" data-lang="en">Tweet</a>
-                </li>
-            </ul>
         </div>
-        {% if session.logged_in %}
-            <ul class="edit-links">
+        <ul class="edit-links">
+            {% if session.logged_in %}
                 <li><button data-id="{{entry.id}}" class="edit-post-btn btn btn-danger btn-sm" data-toggle="modal" data-target="#post-modal" >Edit</a></li>
-            </ul>
-        {% endif %}
+            {% endif %}
+            <li>
+                <a href="https://twitter.com/share" class="twitter-share-button" data-url="https://{{url_for('show_entries')}}/{{entry.id}}" data-lang="en">Tweet</a>
+            </li>
+        </ul>
     </article>
-    {% else %}
-        <div class="entry">
-            <p><em>No entries here so far</em></p>
-        </div>
+{% else %}
+    <div class="entry">
+        <p><em>No entries here so far</em></p>
+    </div>
 {% endfor %}
