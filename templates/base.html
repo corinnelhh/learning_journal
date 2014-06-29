@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="utf-8">
 <title>Python Learning Journal</title>
 <!--[if lt IE 9]>
@@ -54,8 +55,7 @@
 {% endblock %}
 <script>
     var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
-    $(document).ready(function() { 
-      
+    $(document).ready(function() {
     });
     $(".edit-post-btn").on("click", function() {
         var id = $(this).data("id");
