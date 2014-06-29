@@ -41,8 +41,6 @@
         </nav>
     </header>
     <main id="wrapper">
-    </head>
-    <main>
         <section id="content">
             {% block body %}{% endblock %}
         </section>
@@ -73,13 +71,14 @@
     });
     $("#post-form").on("submit", function(event){
         event.preventDefault();
+        $('#post-modal').modal('hide');
         var url = $("#post-form").attr("action");
         $.ajax({
             url : url,
             type : 'POST',
             data : $("#post-form").serialize(),
             success: function(response) {
-                $(".posts").html(response);
+                $(".posts").html(response).fadeIn();
             }
         });
     });

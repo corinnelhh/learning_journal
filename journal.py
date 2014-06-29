@@ -157,7 +157,7 @@ def get_single_entry(id):
 def show_entries():
     entries = get_all_entries()
     for entry in entries:
-        entry['text'] = markdown.markdown(entry['text'], extensions=['codehilite'])
+        entry['text'] = markdown.markdown(entry['text'], extensions=['codehilite(linenums=False)'])
     return render_template('list_entries.html', entries=entries)
 
 
@@ -192,6 +192,12 @@ def edit(id):
     else:
         flash('Please login to edit posts')
         return redirect(url_for('show_entries'))
+
+def update_posts():
+    entries = get_all_entries()
+    for entry in entries:
+        entry['text'] = markdown.markdown(entry['text'], extensions=['codehilite'])
+    return render_template('posts.html', entries=entries)
 
 
 if __name__ == '__main__':
