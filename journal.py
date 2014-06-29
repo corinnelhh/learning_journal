@@ -164,7 +164,7 @@ def get_single_entry(id):
 def show_entries():
     entries = get_all_entries()
     for entry in entries:
-        entry['text'] = markdown.markdown(entry['text'], extensions=['codehilite'])
+        entry['text'] = markdown.markdown(entry['text'], extensions=['codehilite(linenums=False)'])
     return render_template(
             'list_entries.html',
             entries=entries,

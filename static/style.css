@@ -144,6 +144,12 @@ main aside .control_row input{
     border-bottom: 1px solid rgba(0,0,0,.05);
 }
 
+code {
+    background: none repeat scroll 0 0 #ddd;
+    border-radius: 2px;
+    padding: 3px 5px;
+}
+
 .dateline {
     height: 65px;
     width: 65px;
