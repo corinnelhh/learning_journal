@@ -163,6 +163,10 @@ main aside .control_row input{
     padding: 0;
 }
 
+.entry-body {
+    font-size: 18px;
+}
+
 footer, .push {
 	height: 140px; /* '.push' must be the same height as 'footer' */
 }
