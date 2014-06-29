@@ -7,10 +7,13 @@ from flask import Flask, g, render_template, abort, flash
 from flask import request, url_for, redirect, session, jsonify
 from contextlib import closing
 from passlib.hash import pbkdf2_sha256
+from pyshorteners.shorteners  import Shortener
 
 
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODEARRAY)
+
+shortener = Shortener('GoogleShortener')
 
 DB_SCHEMA = """
 DROP TABLE IF EXISTS entries;
@@ -162,7 +165,11 @@ def show_entries():
     entries = get_all_entries()
     for entry in entries:
         entry['text'] = markdown.markdown(entry['text'], extensions=['codehilite'])
-    return render_template('list_entries.html', entries=entries)
+    return render_template(
+            'list_entries.html',
+            entries=entries,
+            twitter_url=shortener.short(url_for('show_entries', _external=True))
+            )
 
 
 @app.route('/<int:id>', methods=["GET"])
