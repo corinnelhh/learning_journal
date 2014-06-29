@@ -8,5 +8,7 @@ itsdangerous==0.24
 passlib==1.6.2
 psycopg2==2.5.3
 py==1.4.20
+pyshorteners==0.3
 pytest==2.5.2
+requests==2.3.0
 wsgiref==0.1.2
