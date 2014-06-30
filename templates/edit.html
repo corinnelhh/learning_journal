@@ -1,22 +1,14 @@
-{% extends 'base.html' %}
-{% block body %}
-    <script>
-    $(document).ready( function(){
-        $('#title').val('{{ entry[0].title }}');
-    });
-    </script>
-    <form action="" method="POST" class="add_entry">
-        <div class="field">
-            <label for="title">Title</label>
-            <input type="test" size="30" name="title" id="title"/>
-        </div><!-- /field -->
-        <div class="field">
-            <label for="text">Text</label>
-            <textarea name="text" id="text" rows="5" cols="80">{{ entry[0].text }}</textarea>
-        </div><!-- /field -->
-        <div class="control_row">
-            <input type="submit" value="Edit" name="Share"/>
-            <a href="/">Cancel</a>
-        </div><!-- /control-row -->
-    </form>
-{% endblock %}
+<form action="" method="POST" class="add_entry">
+    <div class="field">
+        <label for="title">Title</label>
+        <input type="test" size="30" name="title" id="title"/>
+    </div><!-- /field -->
+    <div class="field">
+        <label for="text">Text</label>
+        <textarea name="text" id="text" rows="5" cols="80"></textarea>
+    </div><!-- /field -->
+    <div class="control_row">
+        <input type="submit" value="Edit" name="Share"/>
+        <a href="/">Cancel</a>
+    </div><!-- /control-row -->
+</form>

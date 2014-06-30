@@ -1,14 +1,57 @@
+/*
+red: #D93537
+white: #fffef9
+green: #00585F
+grey: #6A6A61
+black: #272928
+*/
+
+html {
+    height: 100%;
+}
+
 body{
-    color:#111;
+    background-image: url('img/canvas_bg.jpg') ;
+    color:#272928;
     padding:0;
     margin:0;
     font-family: Helvetica, Sans-Serif;
+    height: 100%;
 }
+
+ul, li, ol {
+    list-style: none;
+}
+
+#bg {
+    background: rgba(255,254,249, .7);
+    min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	margin: 0 auto -140px; /* the bottom margin is the negative value of the footer's height */
+}
+
 header{
+    background: linear-gradient(rgba(217,53,55,1), rgba(165,41,41,1));
+    border-bottom: 3px solid #fefff7;
+    box-shadow: 0 5px 0 #00585F;
     margin:0;
-    padding:0 0.75em;
     width:100%;
 }
+
+header h1 {
+    font-family: Lobster;
+    padding: 15px;
+    margin: 0;
+    color: #fefff7;
+    font-size: 42px;
+    text-shadow: -2px -2px 5px rgba(0,0,0,.2), 2px 2px 5px rgba(255,255,255,.2);
+}
+
+header h1 a {
+    color: #fefff7;
+}
+
 header:after{
     content:"";
     display:table;
@@ -29,13 +72,34 @@ header ul{
 }
 header ul li{
     margin:0 0.25em 0 0;
+    float: left;
 }
 header ul li a{
+    color: #fefff7;
     padding:0;
     display:inline-block;
 }
+
+#site-nav li {
+    border: 1px 1px solid back;
+    border-radius: 4px;
+}
+
+#wrapper {
+    background: rgba(255,254,249, .45);
+    height: 100%;
+}
+
+#content {
+    padding: 25px;
+    background: rgba();
+    height: auto;
+}
+
 main{
+    margin: 6px auto;
     padding:0 0.75em 1em;
+    width: 960px;
 }
 main:after{
     content:"";
@@ -75,8 +139,48 @@ main aside .field textarea{
 main aside .control_row input{
     margin-left:16%;
 }
+
+.entry {
+    border-bottom: 1px solid rgba(0,0,0,.05);
+}
+
+code {
+    background: none repeat scroll 0 0 #ddd;
+    border-radius: 2px;
+    padding: 3px 5px;
+}
+
+.dateline {
+    height: 65px;
+    width: 65px;
+    border-radius: 50%;
+    background: #00585F;
+    text-align: center;
+}
+
+.month, .day {
+    color: #fefff7;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.dateline p {
+    margin: 0;
+    padding: 0;
+}
+
+.entry_body p{
+    font-size: 18px;
+}
+
+footer, .push {
+	height: 140px; /* '.push' must be the same height as 'footer' */
+}
+
 footer{
     display: inline-block;
-    margin: 10px;
-    padding-left: 10px;
+    width:100%;
+    background: #6A6A61;
+    border-top: 5px solid #272928;
+    box-shadow: 0 -5px 0 #D93538;
 }

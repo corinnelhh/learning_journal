@@ -9,41 +9,95 @@
 <![endif]-->
 <link href="{{ url_for('static', filename='pygments.css') }}" rel="stylesheet" type="text/css">
 <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ url_for('static', filename='bootstrap.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ url_for('static', filename='fonts/ubuntumono-r.css') }}" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
 <script src="{{ url_for('static', filename='js/jquery-1.11.1.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/twitter_btn.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 </head>
 <body>
-<header>
-    <aside id="user-controls">
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
+<div id="bg">
+    <header>
+        <nav class="nav navbar">
+            <h1><a href="/">My Python Journal</a></h1>
+            <aside id="user-controls">
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <ul class="flash">
+                            {% for message in messages %}
+                                <li>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                {% endwith %}
                 <ul>
-                    {% for message in messages %}
-                        <li>{{ message }}</li>
-                    {% endfor %}
+                    {% if not session.logged_in %}
+                        <li><a href="{{ url_for('login') }}">log in</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('logout') }}">log out</a></li>
+                    {% endif %}
                 </ul>
-            {% endif %}
-        {% endwith %}
-        <ul>
-            {% if not session.logged_in %}
-                <li><a href="{{ url_for('login') }}">log in</a></li>
-            {% else %}
-                <li><a href="{{ url_for('logout') }}">log out</a></li>
-            {% endif %}
-        </ul>
-    </aside>
-    <nav>
-        <ul>
-            <li><a href="/">Home</a></li>
-        </ul>
-    </nav>
-</header>
-<main>
-    <h1>My Python Journal</h1>
-    <section id="content">
-        {% block body %}{% endblock %}
-    </section>
-</main>
-<footer>
-    <p>Created in the Code Fellows Python Dev Accelerator</p>
-</footer>
+            </aside>
+        </nav>
+    </header>
+    <main id="wrapper">
+        <section id="content">
+            {% block body %}{% endblock %}
+        </section>
+    </main>
+    <div class="push"></div>
+    <footer>
+        <p>Created in the Code Fellows Python Dev Accelerator</p>
+    </footer>
+</div>
+{% block modal %}
+{% endblock %}
+<script>
+    var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    var form = $("#post-form");
+    var action_type;
+    var post;
+
+    $(".edit-post-btn").on("click", function() {
+        var id = $(this).data("id");
+        var url = $SCRIPT_ROOT + "/edit/" + id;
+        action_type = 'edit';
+        post = $(this);
+        $.ajax(url, {
+            data: form.serialize(),
+            success: function(response){
+                $("#title").val(response.title);
+                $("#text").val(response.text);
+            }
+        });
+        form.attr("action", "/edit/" + id);
+        $("#title").val(title);
+        $("#text").val(text);
+    });
+    form.on("submit", function(event){
+        event.preventDefault();
+        $.ajax({
+            url : form.attr("action"),
+            type : 'POST',
+            data : form.serialize(),
+            success: function(response) {
+                if(action_type == 'edit'){
+                    post.closest("article").find(".title").text(response.title);
+                    post.closest("article").find(".entry_body").text(response.text);
+                }
+                else{
+                    $(".posts").prepend("<h2>" + response.title + "</h2><p>" + response.text + "</p>").fadeIn();
+                }
+                form[0].reset();
+            }
+        });
+        $("#post-modal").modal("hide");
+    });
+    $("#new-post-btn").on("click", function() {
+        form.attr("action", "{{url_for('add_entry')}}");
+        action_type = 'new';
+    });
+</script>
+<script src="{{ url_for('static', filename='js/jquery-1.11.1.min.js') }}"></script>
 </body>

@@ -1,0 +1,26 @@
+{% for entry in entries %}
+    <article class="entry" id="entry={{entry.id}}">
+        <h2 class="title">{{ entry.title }}</h2>
+        <div class="dateline">
+            <div class="date">
+                <p class="month">{{ entry.created.strftime('%b') }}</p>
+                <p class="day">{{ entry.created.strftime('%d') }}</p>
+            </div>
+        </div>
+        <div class="entry_body">
+            {{ entry.text|safe}}
+        </div>
+        <ul class="edit-links">
+            {% if session.logged_in %}
+                <li><button data-id="{{entry.id}}" class="edit-post-btn btn btn-danger btn-sm" data-toggle="modal" data-target="#post-modal" >Edit</a></li>
+            {% endif %}
+            <li>
+                <a href="https://twitter.com/share" class="twitter-share-button" data-url="{{ twitter_url }}#entry={{entry.id}}" data-lang="en">Tweet</a>
+            </li>
+        </ul>
+    </article>
+{% else %}
+    <div class="entry">
+        <p><em>No entries here so far</em></p>
+    </div>
+{% endfor %}
