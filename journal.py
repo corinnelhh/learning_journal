@@ -153,12 +153,14 @@ def get_all_entries():
 
 
 def get_single_entry(id):
-    con = get_database_connection()
-    cur = con.cursor()
-    cur.execute(DB_RETURN_BY_ID, [id])
-    keys = ('id', 'title', 'text', 'created')
-    return dict(zip(keys, cur.fetchone()))
-
+    try:
+        con = get_database_connection()
+        cur = con.cursor()
+        cur.execute(DB_RETURN_BY_ID, [id])
+        keys = ('id', 'title', 'text', 'created')
+        return dict(zip(keys, cur.fetchone()))
+    except TypeError:
+        return redirect(url_for('show_entries'))
 
 @app.route('/')
 def show_entries():
@@ -175,7 +177,7 @@ def show_entries():
 @app.route('/<int:id>', methods=["GET"])
 def show_single_entry(id):
     try:
-        entry = get_single_entry(id)[0]
+        entry = get_single_entry(id)
         entry['text'] = markdown.markdown(entry['text'], extensions=['codehilite'])
         return render_template('list_entry.html', entry=entry)
     except IndexError:
@@ -209,7 +211,7 @@ def edit(id):
                 title = request.form.get('title', False)
                 text = request.form.get('text', False)
                 update_entry(id,title,text)
-                return jsonify({'title': title, 'text': text})
+                return jsonify({'title': title, 'text': markdown.markdown(text)})
             except psycopg2.Error:
                 abort(500)
     else:
