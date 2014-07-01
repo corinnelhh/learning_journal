@@ -11,10 +11,12 @@
 <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" type="text/css">
 <link href="{{ url_for('static', filename='bootstrap.css') }}" rel="stylesheet" type="text/css">
 <link href="{{ url_for('static', filename='fonts/ubuntumono-r.css') }}" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
 <link href='http://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
-<script src="{{ url_for('static', filename='js/jquery-1.11.1.min.js') }}"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
 <script src="{{ url_for('static', filename='js/twitter_btn.js') }}"></script>
-<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 </head>
 <body>
 <div id="bg">
@@ -77,6 +79,7 @@
     });
     form.on("submit", function(event){
         event.preventDefault();
+        //$.noConflict();
         $.ajax({
             url : form.attr("action"),
             type : 'POST',
@@ -84,20 +87,19 @@
             success: function(response) {
                 if(action_type == 'edit'){
                     post.closest("article").find(".title").text(response.title);
-                    post.closest("article").find(".entry_body").text(response.text);
+                    post.closest("article").find(".entry_body").html(response.text);
                 }
                 else{
-                    $(".posts").prepend("<h2>" + response.title + "</h2><p>" + response.text + "</p>").fadeIn();
+                    $(".posts").prepend(response).fadeIn();
                 }
                 form[0].reset();
+                $("#post-modal").modal("hide");
             }
         });
-        $("#post-modal").modal("hide");
     });
     $("#new-post-btn").on("click", function() {
         form.attr("action", "{{url_for('add_entry')}}");
         action_type = 'new';
     });
 </script>
-<script src="{{ url_for('static', filename='js/jquery-1.11.1.min.js') }}"></script>
 </body>

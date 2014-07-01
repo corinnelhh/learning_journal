@@ -37,6 +37,8 @@ DB_RETURN_BY_ID = """
 SELECT id, title, text, created FROM entries WHERE id = (%s)
 """
 
+DB_GET_FIRST = """ SELECT id, title, text, created FROM entries ORDER BY created DESC LIMIT 1 """
+
 DB_UPDATE_ENTRY = """
 UPDATE entries
 SET title = %s,
@@ -122,6 +124,10 @@ def write_entry(title, text):
     cur = con.cursor()
     now = datetime.datetime.utcnow()
     cur.execute(DB_ENTRY_INSERT, [title.encode('UTF-8'), text.encode('UTF-8'), now])
+    cur.execute(DB_GET_FIRST)
+    entry = cur.fetchone()
+    keys = ('id', 'title', 'text', 'created')
+    return dict(zip(keys,entry))
 
 
 def update_entry(id, title, text):
@@ -153,11 +159,14 @@ def get_all_entries():
 
 
 def get_single_entry(id):
-    con = get_database_connection()
-    cur = con.cursor()
-    cur.execute(DB_RETURN_BY_ID, [id])
-    keys = ('id', 'title', 'text', 'created')
-    return dict(zip(keys, cur.fetchone()))
+    try:
+        con = get_database_connection()
+        cur = con.cursor()
+        cur.execute(DB_RETURN_BY_ID, [id])
+        keys = ('id', 'title', 'text', 'created')
+        return dict(zip(keys, cur.fetchone()))
+    except TypeError:
+        abort(404)
 
 
 @app.route('/')
@@ -187,8 +196,9 @@ def add_entry():
     try:
         title = request.form['title']
         text = request.form['text']
-        write_entry(title, text)
-        return jsonify(title=title, text=text)
+        entry = write_entry(title, text)
+        print(entry)
+        return render_template('post.html', entry=entry)
     except psycopg2.Error:
         abort(500)
         return redirect(url_for('show_entries'))
@@ -209,7 +219,7 @@ def edit(id):
                 title = request.form.get('title', False)
                 text = request.form.get('text', False)
                 update_entry(id,title,text)
-                return jsonify({'title': title, 'text': text})
+                return jsonify({'title': title, 'text': markdown.markdown(text, extensions=['codehilite(linenums=False)'])})
             except psycopg2.Error:
                 abort(500)
     else:
