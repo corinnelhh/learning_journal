@@ -9,7 +9,7 @@ from journal import init_db
 
 from flask import session
 
-SUBMIT_BTN = '<input type="submit" value="Share" name="Share"/>'
+SUBMIT_BTN = '<input id="save-post-btn" class="btn btn-info" type="submit" value="Save"  name="Share"/>'
 TEST_DSN = 'dbname=test_learning_journal'
 
 
