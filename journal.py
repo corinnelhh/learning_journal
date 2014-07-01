@@ -209,7 +209,7 @@ def edit(id):
                 title = request.form.get('title', False)
                 text = request.form.get('text', False)
                 update_entry(id,title,text)
-                return jsonify({'title': title, 'text': text})
+                return jsonify({'title': title, 'text': markdown.markdown(text)})
             except psycopg2.Error:
                 abort(500)
     else:

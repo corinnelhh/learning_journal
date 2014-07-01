@@ -83,16 +83,14 @@ def view_the_homepage(step):
 def see_edit_button(step):
     body = lettuce.world.response.data
     msg = " 'edit' button not in %s"
-    assert '<a href="edit/1">Edit</a>' in body, msg % body
-    assert 'class="edit-links"' in body, msg % body
+    assert 'class="edit-post-btn btn btn-danger btn-sm"' in body, msg % body
 
 
 @lettuce.step('I do not see a button to edit posts')
 def do_not_see_edit_button(step):
     body = lettuce.world.response.data
     msg = " 'edit' button in %s"
-    assert '<a href="edit/1">Edit</a>' not in body, msg % body
-    assert 'class="edit-links"' not in body, msg % body
+    assert 'class="edit-post-btn btn btn-danger btn-sm"' not in body, msg % body
 
 
 @lettuce.step("I append '/edit/1' to the home url")
@@ -146,7 +144,7 @@ def click_on_edit_button(step):
 def see_edit_entry_form(step):
     body = lettuce.world.response.data
     msg = 'value="Edit" not in %s'
-    assert 'value="Edit"' in body, msg % body
+    assert '"text": "This is my sample text."' in body, msg % body
 
 
 @lettuce.step('I see a button to tweet each post')
