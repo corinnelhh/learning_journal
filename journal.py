@@ -197,7 +197,6 @@ def add_entry():
         title = request.form['title']
         text = request.form['text']
         entry = write_entry(title, text)
-        print(entry)
         return render_template('post.html', entry=entry)
     except psycopg2.Error:
         abort(500)
