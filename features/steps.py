@@ -103,8 +103,8 @@ def append_edit_to_url(step):
 @lettuce.step('I do not see the edit entry form')
 def do_not_see_edit_entry_form(step):
     body = lettuce.world.response.data
-    msg = 'value="Edit" in %s'
-    assert 'value="Edit"' not in body, msg % body
+    msg = '"text": "This is my sample text." in %s'
+    assert '"text": "This is my sample text."' not in body, msg % body
 
 
 @lettuce.step('I see my updated entry')
@@ -143,7 +143,7 @@ def click_on_edit_button(step):
 @lettuce.step('I see the edit entry form')
 def see_edit_entry_form(step):
     body = lettuce.world.response.data
-    msg = 'value="Edit" not in %s'
+    msg = '"text": "This is my sample text." not in %s'
     assert '"text": "This is my sample text."' in body, msg % body
 
 
