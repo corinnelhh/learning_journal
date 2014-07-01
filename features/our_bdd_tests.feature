@@ -46,5 +46,4 @@ Feature: My Learning Journal
         And an existing entry
         When I view the home page
         Then I see a button to tweet each post
-        And it will autofill the post title
 

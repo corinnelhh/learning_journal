@@ -184,7 +184,7 @@ def show_entries():
 @app.route('/<int:id>', methods=["GET"])
 def show_single_entry(id):
     try:
-        entry = get_single_entry(id)[0]
+        entry = get_single_entry(id)
         entry['text'] = markdown.markdown(entry['text'], extensions=['codehilite'])
         return render_template('list_entry.html', entry=entry)
     except IndexError:
